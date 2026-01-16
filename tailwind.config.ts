@@ -15,7 +15,7 @@ export default {
   	extend: {
   		fontFamily: {
   			sans: [
-  				'Montserrat',
+  				'Lato',
   				'ui-sans-serif',
   				'system-ui',
   				'sans-serif',
@@ -36,7 +36,7 @@ export default {
   				'monospace'
   			],
   			serif: [
-  				'Cormorant Garamond',
+  				'Merriweather',
   				'ui-serif',
   				'Georgia',
   				'Cambria',
