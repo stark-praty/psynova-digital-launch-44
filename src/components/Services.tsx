@@ -88,20 +88,29 @@ const Services = () => {
             <motion.div
               key={service.title}
               variants={itemVariants}
-              className="group p-6 rounded-xl border-gradient shadow-card hover:shadow-elevated transition-all duration-300"
-              whileHover={{ y: -8, transition: { duration: 0.2 } }}
+              className="group p-6 rounded-xl bg-card border border-border shadow-card hover:shadow-elevated transition-all duration-300 relative overflow-hidden"
+              whileHover={{ 
+                y: -8, 
+                scale: 1.02,
+                transition: { duration: 0.2 } 
+              }}
             >
+              {/* Shimmer effect on hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-0 animate-shimmer" />
+              </div>
+              
               <motion.div 
-                className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors"
+                className="relative z-10 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
                 <service.icon className="w-6 h-6 text-primary" />
               </motion.div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">
+              <h3 className="relative z-10 text-xl font-semibold text-foreground mb-2">
                 {service.title}
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="relative z-10 text-muted-foreground leading-relaxed">
                 {service.description}
               </p>
             </motion.div>
