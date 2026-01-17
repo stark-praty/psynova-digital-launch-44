@@ -101,10 +101,15 @@ const Projects = () => {
             <motion.div
               key={group.category}
               variants={cardVariants}
-              className="p-6 rounded-xl bg-background border border-border"
+              className="p-6 rounded-xl bg-background border border-border shadow-card hover:shadow-elevated transition-all duration-300 relative overflow-hidden group"
               whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
             >
-              <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+              {/* Gradient border glow on hover */}
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/20 via-transparent to-primary/20" />
+              </div>
+              
+              <h3 className="relative z-10 text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
                 <motion.span 
                   className="w-2 h-2 rounded-full bg-primary"
                   animate={{ scale: [1, 1.3, 1] }}
@@ -113,7 +118,7 @@ const Projects = () => {
                 {group.category}
               </h3>
               <motion.ul 
-                className="space-y-3"
+                className="relative z-10 space-y-3"
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
@@ -147,12 +152,16 @@ const Projects = () => {
             {["SaaS", "Fintech", "Healthcare", "Property & Mortgage", "SMEs", "Enterprise Teams"].map((industry, index) => (
               <motion.span
                 key={industry}
-                className="px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium"
+                className="px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium border border-border"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: 0.4 + index * 0.05 }}
-                whileHover={{ scale: 1.05, backgroundColor: "hsl(var(--primary) / 0.2)" }}
+                whileHover={{ 
+                  scale: 1.08, 
+                  backgroundColor: "hsl(var(--primary) / 0.15)",
+                  borderColor: "hsl(var(--primary) / 0.5)"
+                }}
               >
                 {industry}
               </motion.span>
