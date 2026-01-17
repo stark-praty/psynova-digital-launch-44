@@ -1,4 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const achievements = [
   {
@@ -35,57 +36,129 @@ const achievements = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 0.46, 0.45, 0.94] as const
+    }
+  }
+};
+
+const listItemVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.4
+    }
+  }
+};
+
 const Projects = () => {
   return (
     <section id="projects" className="py-24 bg-card relative">
       <div className="container mx-auto px-6">
         {/* Section header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <motion.div 
+          className="text-center max-w-2xl mx-auto mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             What We've Delivered
           </h2>
           <p className="text-muted-foreground text-lg">
             Real outcomes across automation, enterprise systems, and cloud infrastructure.
           </p>
-        </div>
+        </motion.div>
 
         {/* Achievements grid */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <motion.div 
+          className="grid md:grid-cols-2 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
           {achievements.map((group) => (
-            <div
+            <motion.div
               key={group.category}
+              variants={cardVariants}
               className="p-6 rounded-xl bg-background border border-border"
+              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
             >
               <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-primary" />
+                <motion.span 
+                  className="w-2 h-2 rounded-full bg-primary"
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
                 {group.category}
               </h3>
-              <ul className="space-y-3">
+              <motion.ul 
+                className="space-y-3"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
                 {group.items.map((item, index) => (
-                  <li key={index} className="flex items-start gap-3">
+                  <motion.li 
+                    key={index} 
+                    className="flex items-start gap-3"
+                    variants={listItemVariants}
+                  >
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                     <span className="text-muted-foreground">{item}</span>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
-            </div>
+              </motion.ul>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Industries */}
-        <div className="mt-16 text-center">
+        <motion.div 
+          className="mt-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
           <p className="text-sm text-muted-foreground mb-4">Industries we serve</p>
           <div className="flex flex-wrap justify-center gap-3">
-            {["SaaS", "Fintech", "Healthcare", "Property & Mortgage", "SMEs", "Enterprise Teams"].map((industry) => (
-              <span
+            {["SaaS", "Fintech", "Healthcare", "Property & Mortgage", "SMEs", "Enterprise Teams"].map((industry, index) => (
+              <motion.span
                 key={industry}
                 className="px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: 0.4 + index * 0.05 }}
+                whileHover={{ scale: 1.05, backgroundColor: "hsl(var(--primary) / 0.2)" }}
               >
                 {industry}
-              </span>
+              </motion.span>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
