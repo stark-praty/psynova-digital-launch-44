@@ -1,5 +1,37 @@
 import { CheckCircle2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+
+const stats = [
+  { value: 15, suffix: "+", label: "Projects Delivered" },
+  { value: 10, suffix: "+", label: "Industries Served" },
+  { value: 3, suffix: "+", label: "Years Experience" },
+];
+
+const AnimatedCounter = ({ value, suffix }: { value: number; suffix: string }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+    let start = 0;
+    const duration = 1500;
+    const step = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      setCount(Math.floor(progress * value));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [isInView, value]);
+
+  return (
+    <span ref={ref} className="text-4xl sm:text-5xl font-bold text-gradient">
+      {count}{suffix}
+    </span>
+  );
+};
 
 const achievements = [
   {
@@ -36,45 +68,13 @@ const achievements = [
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15
-    }
-  }
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.25, 0.46, 0.45, 0.94] as const
-    }
-  }
-};
-
-const listItemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.4
-    }
-  }
-};
+const industries = ["SaaS", "Fintech", "Healthcare", "Property & Mortgage", "SMEs", "Enterprise Teams"];
 
 const Projects = () => {
   return (
-    <section id="projects" className="py-24 bg-card relative">
+    <section id="projects" className="py-24 bg-card relative noise-overlay">
       <div className="container mx-auto px-6">
-        {/* Section header */}
-        <motion.div 
+        <motion.div
           className="text-center max-w-2xl mx-auto mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -89,79 +89,76 @@ const Projects = () => {
           </p>
         </motion.div>
 
-        {/* Achievements grid */}
-        <motion.div 
-          className="grid md:grid-cols-2 gap-8"
-          variants={containerVariants}
+        {/* Animated Counters */}
+        <motion.div
+          className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+              <div className="text-sm text-muted-foreground mt-2">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Achievement Cards */}
+        <motion.div
+          className="grid md:grid-cols-2 gap-6"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
+          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.15 } } }}
         >
           {achievements.map((group) => (
             <motion.div
               key={group.category}
-              variants={cardVariants}
-              className="p-6 rounded-xl bg-background border border-border shadow-card hover:shadow-elevated transition-all duration-300 relative overflow-hidden group"
+              variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
+              className="p-6 rounded-xl bg-background border border-border shadow-card hover:shadow-elevated transition-all duration-300 gradient-border-glow"
               whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
             >
-              {/* Gradient border glow on hover */}
-              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/20 via-transparent to-primary/20" />
-              </div>
-              
-              <h3 className="relative z-10 text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-                <motion.span 
+              <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+                <motion.span
                   className="w-2 h-2 rounded-full bg-primary"
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
                 {group.category}
               </h3>
-              <motion.ul 
-                className="relative z-10 space-y-3"
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-              >
+              <ul className="space-y-3">
                 {group.items.map((item, index) => (
-                  <motion.li 
-                    key={index} 
-                    className="flex items-start gap-3"
-                    variants={listItemVariants}
-                  >
+                  <li key={index} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                     <span className="text-muted-foreground">{item}</span>
-                  </motion.li>
+                  </li>
                 ))}
-              </motion.ul>
+              </ul>
             </motion.div>
           ))}
         </motion.div>
 
         {/* Industries */}
-        <motion.div 
+        <motion.div
           className="mt-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <p className="text-sm text-muted-foreground mb-4">Industries we serve</p>
+          <p className="text-sm text-muted-foreground mb-4 uppercase tracking-wider">Industries we serve</p>
           <div className="flex flex-wrap justify-center gap-3">
-            {["SaaS", "Fintech", "Healthcare", "Property & Mortgage", "SMEs", "Enterprise Teams"].map((industry, index) => (
+            {industries.map((industry, index) => (
               <motion.span
                 key={industry}
-                className="px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium border border-border"
+                className="px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium border border-border gradient-border-glow cursor-default"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: 0.4 + index * 0.05 }}
-                whileHover={{ 
-                  scale: 1.08, 
-                  backgroundColor: "hsl(var(--primary) / 0.15)",
-                  borderColor: "hsl(var(--primary) / 0.5)"
-                }}
+                whileHover={{ scale: 1.08 }}
               >
                 {industry}
               </motion.span>
