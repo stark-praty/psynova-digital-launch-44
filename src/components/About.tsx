@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 const founders = [
   {
-    initials: "PG",
+    photo: "/images/A11.jpg",
     name: "Pratyush Garg",
     role: "Co-Founder & Principal Engineer",
     bio: "With hands-on experience across automation systems, enterprise platforms, healthcare systems, Zoom integrations, AI-powered bots, and property & mortgage ERP systems, Pratyush leads Psynova Digital with direct architectural involvement from system design to deployment.",
@@ -14,7 +14,7 @@ const founders = [
     ],
   },
   {
-    initials: "SJ",
+    photo: "/images/A12.jpg",
     name: "Shivam Jain",
     role: "Co-Founder & Technology Lead",
     bio: "Shivam brings deep expertise in full-stack development, cloud architecture, and scalable system design. With a passion for building intelligent solutions, he co-leads Psynova Digital's engineering vision and ensures every product meets the highest technical standards.",
@@ -26,9 +26,12 @@ const founders = [
   },
 ];
 
+// Duplicate array for seamless infinite scroll
+const marqueeFounders = [...founders, ...founders, ...founders, ...founders];
+
 const About = () => {
   return (
-    <section id="about" className="py-24 bg-background relative noise-overlay">
+    <section id="about" className="py-24 bg-background relative noise-overlay overflow-hidden">
       <div className="container mx-auto px-6">
         <motion.div
           className="text-center mb-12"
@@ -41,46 +44,65 @@ const About = () => {
             Meet the Founders
           </h2>
         </motion.div>
+      </div>
 
-        {/* Side-by-side scrollable row */}
-        <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-          {founders.map((founder, i) => (
-            <motion.div
-              key={founder.initials}
-              className="min-w-[340px] flex-1 p-8 rounded-2xl glass-panel-strong border-gradient shadow-elevated relative overflow-hidden snap-center"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: 0.2 + i * 0.15 }}
+      {/* Infinite marquee scrolling */}
+      <div className="relative w-full">
+        {/* Fade edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+
+        <motion.div
+          className="flex gap-6 w-max py-4 px-6"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            x: {
+              repeat: Infinity,
+              repeatType: "loop",
+              duration: 30,
+              ease: "linear",
+            },
+          }}
+          whileHover={{ animationPlayState: "paused" }}
+          style={{ animationPlayState: "running" }}
+        >
+          {marqueeFounders.map((founder, i) => (
+            <div
+              key={`${founder.name}-${i}`}
+              className="min-w-[380px] max-w-[420px] p-8 rounded-2xl glass-panel-strong border-gradient shadow-elevated relative overflow-hidden flex-shrink-0"
             >
               <div className="absolute top-0 left-0 w-48 h-48 rounded-full blur-[80px] pointer-events-none" style={{ background: "hsl(var(--primary) / 0.1)" }} />
 
-              <div className="flex flex-col gap-5 relative z-10">
+              <div className="flex flex-col md:flex-row gap-6 items-start relative z-10">
                 <motion.div
-                  className="w-20 h-20 rounded-xl gradient-accent flex items-center justify-center glow-primary"
+                  className="w-24 h-24 flex items-center justify-center flex-shrink-0 glow-primary"
                   whileHover={{ rotate: 5, scale: 1.05 }}
                 >
-                  <span className="text-3xl font-bold text-primary-foreground">{founder.initials}</span>
+                  <img
+                    className="rounded-xl w-full h-full object-cover"
+                    src={founder.photo}
+                    alt={founder.name}
+                  />
                 </motion.div>
 
-                <div>
+                <div className="flex-1">
                   <h3 className="text-2xl font-bold text-foreground mb-1">{founder.name}</h3>
                   <p className="text-primary font-medium mb-4">{founder.role}</p>
-                  <p className="text-muted-foreground leading-relaxed mb-6">{founder.bio}</p>
+                  <p className="text-muted-foreground leading-relaxed mb-6 text-sm">{founder.bio}</p>
 
                   <div className="flex flex-col gap-3">
                     {founder.credentials.map((cred, j) => (
-                      <motion.div key={j} className="flex items-center gap-2 text-sm text-muted-foreground" whileHover={{ scale: 1.05 }}>
+                      <div key={j} className="flex items-center gap-2 text-sm text-muted-foreground">
                         <cred.icon className="w-4 h-4 text-primary flex-shrink-0" />
                         <span>{cred.text}</span>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
