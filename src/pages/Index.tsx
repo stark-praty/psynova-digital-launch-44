@@ -7,6 +7,7 @@ import TechStack from "@/components/TechStack";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import SectionDivider from "@/components/SectionDivider";
 
 const Index = () => {
   return (
@@ -14,11 +15,17 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
+        <SectionDivider />
         <Services />
+        <SectionDivider />
         <Projects />
+        <SectionDivider />
         <HowWeWork />
+        <SectionDivider />
         <TechStack />
+        <SectionDivider />
         <About />
+        <SectionDivider />
         <Contact />
       </main>
       <Footer />
