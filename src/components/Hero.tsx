@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, Bot, Building2, Cloud, Plug, MessageCircle } from "lucide-react";
+import { ArrowRight, Zap, Bot, Building2, Cloud, Plug } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
@@ -89,7 +89,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden noise-overlay" style={{ background: "hsl(240 20% 4%)" }}>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden noise-overlay bg-background">
       <ParticleBackground />
 
       {/* Grid pattern */}
@@ -149,11 +149,9 @@ const Hero = () => {
               Book Consultation
               <ArrowRight className="w-5 h-5" />
             </Button>
-            <Button variant="heroOutline" size="xl" asChild>
-              <a href="https://wa.me/919220494390" target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="w-5 h-5" />
-                WhatsApp Us
-              </a>
+            <Button variant="heroOutline" size="xl" onClick={scrollToContact}>
+              <Zap className="w-5 h-5" />
+              Let's Build Something Intelligent
             </Button>
           </motion.div>
 
