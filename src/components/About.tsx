@@ -1,6 +1,7 @@
-import { GraduationCap, Award, Shield, Code, Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
+import { GraduationCap, Award, Shield, Code, Briefcase } from "lucide-react";
 import { motion } from "framer-motion";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, type CarouselApi } from "@/components/ui/carousel";
+import { useState, useEffect } from "react";
 
 const founders = [
   {
@@ -28,6 +29,17 @@ const founders = [
 ];
 
 const About = () => {
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!api) return;
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap());
+    api.on("select", () => setCurrent(api.selectedScrollSnap()));
+  }, [api]);
+
   return (
     <section id="about" className="py-24 bg-background relative noise-overlay overflow-hidden">
       <div className="container mx-auto px-6">
@@ -43,10 +55,10 @@ const About = () => {
           </h2>
         </motion.div>
 
-        <Carousel opts={{ align: "center", loop: true }} className="w-full max-w-4xl mx-auto">
+        <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full max-w-5xl mx-auto">
           <CarouselContent>
             {founders.map((founder) => (
-              <CarouselItem key={founder.name} className="md:basis-1/2 lg:basis-1/2">
+              <CarouselItem key={founder.name} className="md:basis-3/5 lg:basis-3/5">
                 <div className="p-8 rounded-2xl glass-panel-strong border-gradient shadow-elevated relative overflow-hidden h-full">
                   <div className="absolute top-0 left-0 w-48 h-48 rounded-full blur-[80px] pointer-events-none" style={{ background: "hsl(var(--primary) / 0.1)" }} />
 
@@ -81,8 +93,24 @@ const About = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious className="hidden sm:flex -left-4 md:-left-12" />
+          <CarouselNext className="hidden sm:flex -right-4 md:-right-12" />
+
+          {/* Bullet pagination */}
+          <div className="flex justify-center gap-2 mt-6">
+            {Array.from({ length: count }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => api?.scrollTo(i)}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  i === current
+                    ? "w-8 bg-primary"
+                    : "w-2.5 bg-primary/30 hover:bg-primary/50"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
         </Carousel>
       </div>
     </section>
