@@ -28,16 +28,19 @@ const founders = [
   },
 ];
 
+// Duplicate founders to ensure enough items for infinite loop on all viewports
+const loopedFounders = [...founders, ...founders, ...founders];
+
 const About = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (!api) return;
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap());
-    api.on("select", () => setCurrent(api.selectedScrollSnap()));
+    const onSelect = () => setCurrent(api.selectedScrollSnap() % founders.length);
+    onSelect();
+    api.on("select", onSelect);
+    return () => { api.off("select", onSelect); };
   }, [api]);
 
   return (
@@ -57,8 +60,8 @@ const About = () => {
 
         <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full max-w-6xl mx-auto">
           <CarouselContent>
-            {founders.map((founder) => (
-              <CarouselItem key={founder.name} className="basis-[85%] md:basis-[70%] lg:basis-[65%]">
+            {loopedFounders.map((founder, index) => (
+              <CarouselItem key={`${founder.name}-${index}`} className="basis-[85%] md:basis-[70%] lg:basis-[65%]">
                 <div className="p-8 rounded-2xl glass-panel-strong border-gradient shadow-elevated relative overflow-hidden h-full">
                   <div className="absolute top-0 left-0 w-48 h-48 rounded-full blur-[80px] pointer-events-none" style={{ background: "hsl(var(--primary) / 0.1)" }} />
 
@@ -98,10 +101,14 @@ const About = () => {
 
           {/* Bullet pagination with blue-purple gradient */}
           <div className="flex justify-center gap-2 mt-6">
-            {Array.from({ length: count }).map((_, i) => (
+            {founders.map((_, i) => (
               <button
                 key={i}
-                onClick={() => api?.scrollTo(i)}
+                onClick={() => {
+                  // Find the nearest instance of this founder and scroll to it
+                  const targetIndex = loopedFounders.findIndex((f, idx) => idx % founders.length === i && idx >= (api?.selectedScrollSnap() ?? 0) - founders.length);
+                  api?.scrollTo(targetIndex >= 0 ? targetIndex : i);
+                }}
                 className={`h-2.5 rounded-full transition-all duration-300 ${
                   i === current
                     ? "w-8"
