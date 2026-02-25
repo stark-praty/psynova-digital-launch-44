@@ -1,5 +1,6 @@
-import { GraduationCap, Award, Shield, Code, Briefcase } from "lucide-react";
+import { GraduationCap, Award, Shield, Code, Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
 const founders = [
   {
@@ -26,9 +27,6 @@ const founders = [
   },
 ];
 
-// Duplicate array for seamless infinite scroll
-const marqueeFounders = [...founders, ...founders, ...founders, ...founders];
-
 const About = () => {
   return (
     <section id="about" className="py-24 bg-background relative noise-overlay overflow-hidden">
@@ -44,65 +42,48 @@ const About = () => {
             Meet the Founders
           </h2>
         </motion.div>
-      </div>
 
-      {/* Infinite marquee scrolling */}
-      <div className="relative w-full">
-        {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-r from-background to-transparent pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+        <Carousel opts={{ align: "center", loop: true }} className="w-full max-w-4xl mx-auto">
+          <CarouselContent>
+            {founders.map((founder) => (
+              <CarouselItem key={founder.name} className="md:basis-1/2 lg:basis-1/2">
+                <div className="p-8 rounded-2xl glass-panel-strong border-gradient shadow-elevated relative overflow-hidden h-full">
+                  <div className="absolute top-0 left-0 w-48 h-48 rounded-full blur-[80px] pointer-events-none" style={{ background: "hsl(var(--primary) / 0.1)" }} />
 
-        <motion.div
-          className="flex gap-6 w-max py-4 px-6"
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{
-            x: {
-              repeat: Infinity,
-              repeatType: "loop",
-              duration: 30,
-              ease: "linear",
-            },
-          }}
-          whileHover={{ animationPlayState: "paused" }}
-          style={{ animationPlayState: "running" }}
-        >
-          {marqueeFounders.map((founder, i) => (
-            <div
-              key={`${founder.name}-${i}`}
-              className="min-w-[380px] max-w-[420px] p-8 rounded-2xl glass-panel-strong border-gradient shadow-elevated relative overflow-hidden flex-shrink-0"
-            >
-              <div className="absolute top-0 left-0 w-48 h-48 rounded-full blur-[80px] pointer-events-none" style={{ background: "hsl(var(--primary) / 0.1)" }} />
+                  <div className="flex flex-col gap-6 items-start relative z-10">
+                    <motion.div
+                      className="w-24 h-24 flex items-center justify-center flex-shrink-0 glow-primary"
+                      whileHover={{ rotate: 5, scale: 1.05 }}
+                    >
+                      <img
+                        className="rounded-xl w-full h-full object-cover"
+                        src={founder.photo}
+                        alt={founder.name}
+                      />
+                    </motion.div>
 
-              <div className="flex flex-col md:flex-row gap-6 items-start relative z-10">
-                <motion.div
-                  className="w-24 h-24 flex items-center justify-center flex-shrink-0 glow-primary"
-                  whileHover={{ rotate: 5, scale: 1.05 }}
-                >
-                  <img
-                    className="rounded-xl w-full h-full object-cover"
-                    src={founder.photo}
-                    alt={founder.name}
-                  />
-                </motion.div>
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold text-foreground mb-1">{founder.name}</h3>
+                      <p className="text-primary font-medium mb-4">{founder.role}</p>
+                      <p className="text-muted-foreground leading-relaxed mb-6 text-sm">{founder.bio}</p>
 
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-foreground mb-1">{founder.name}</h3>
-                  <p className="text-primary font-medium mb-4">{founder.role}</p>
-                  <p className="text-muted-foreground leading-relaxed mb-6 text-sm">{founder.bio}</p>
-
-                  <div className="flex flex-col gap-3">
-                    {founder.credentials.map((cred, j) => (
-                      <div key={j} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <cred.icon className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span>{cred.text}</span>
+                      <div className="flex flex-col gap-3">
+                        {founder.credentials.map((cred, j) => (
+                          <div key={j} className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <cred.icon className="w-4 h-4 text-primary flex-shrink-0" />
+                            <span>{cred.text}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </motion.div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
     </section>
   );
