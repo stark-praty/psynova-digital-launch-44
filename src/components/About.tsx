@@ -55,10 +55,10 @@ const About = () => {
           </h2>
         </motion.div>
 
-        <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full max-w-5xl mx-auto">
+        <Carousel setApi={setApi} opts={{ align: "center", loop: true }} className="w-full max-w-6xl mx-auto">
           <CarouselContent>
             {founders.map((founder) => (
-              <CarouselItem key={founder.name} className="md:basis-3/5 lg:basis-3/5">
+              <CarouselItem key={founder.name} className="basis-[85%] md:basis-[70%] lg:basis-[65%]">
                 <div className="p-8 rounded-2xl glass-panel-strong border-gradient shadow-elevated relative overflow-hidden h-full">
                   <div className="absolute top-0 left-0 w-48 h-48 rounded-full blur-[80px] pointer-events-none" style={{ background: "hsl(var(--primary) / 0.1)" }} />
 
@@ -93,10 +93,10 @@ const About = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden sm:flex -left-4 md:-left-12" />
-          <CarouselNext className="hidden sm:flex -right-4 md:-right-12" />
+          <CarouselPrevious className="left-2 sm:-left-4 md:-left-12" />
+          <CarouselNext className="right-2 sm:-right-4 md:-right-12" />
 
-          {/* Bullet pagination */}
+          {/* Bullet pagination with blue-purple gradient */}
           <div className="flex justify-center gap-2 mt-6">
             {Array.from({ length: count }).map((_, i) => (
               <button
@@ -104,9 +104,14 @@ const About = () => {
                 onClick={() => api?.scrollTo(i)}
                 className={`h-2.5 rounded-full transition-all duration-300 ${
                   i === current
-                    ? "w-8 bg-primary"
-                    : "w-2.5 bg-primary/30 hover:bg-primary/50"
+                    ? "w-8"
+                    : "w-2.5 opacity-30 hover:opacity-50"
                 }`}
+                style={{
+                  background: i === current
+                    ? "linear-gradient(135deg, hsl(238 100% 51%), hsl(280 80% 55%))"
+                    : "linear-gradient(135deg, hsl(238 100% 51%), hsl(280 80% 55%))",
+                }}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}
